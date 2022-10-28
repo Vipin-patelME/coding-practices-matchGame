@@ -14,7 +14,7 @@ const YourScore = props => {
         alt="trophy"
         className="trophy-image"
       />
-      <p className="yout-score">Your Score</p>
+      <p className="yout-score">YOUR SCORE</p>
       <p className="score-count-para">{count}</p>
       <button onClick={playGameAgain} className="play-again-btn" type="button">
         <img

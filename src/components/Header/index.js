@@ -1,7 +1,7 @@
 import './index.css'
 
 const Header = props => {
-  const {count} = props
+  const {count, seconds} = props
   return (
     <nav className="nav-style">
       <div>
@@ -11,21 +11,21 @@ const Header = props => {
           className="header-logo"
         />
       </div>
-      <div className="counter-item-cont">
-        <div className="child-div">
+      <ul className="counter-item-cont">
+        <li key="1" className="child-div">
           <p className="count-para">
             Score: <span className="span-style">{count}</span>
           </p>
-        </div>
-        <div className="child-div">
+        </li>
+        <li key="2" className="child-div">
           <img
             src="https://assets.ccbp.in/frontend/react-js/match-game-timer-img.png"
             alt="timer"
             className="timer-logo"
           />
-          <span className="span-style"> 60 sec</span>
-        </div>
-      </div>
+          <p className="span-style"> {`${seconds} sec`}</p>
+        </li>
+      </ul>
     </nav>
   )
 }

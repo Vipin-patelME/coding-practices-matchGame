@@ -252,16 +252,22 @@ const initialImagesList = [
 ]
 
 const TabItem = props => {
-  const {eachTab, filteredNewLists} = props
+  const {eachTab, filteredNewLists, isActive} = props
   const {displayText, tabId} = eachTab
 
   const onFilterCategoryList = () => {
     filteredNewLists(tabId)
   }
 
+  const activeBtnClass = isActive ? 'activeBtn' : 'tab-btn'
+
   return (
     <li>
-      <button onClick={onFilterCategoryList} className="tab-btn" type="button">
+      <button
+        onClick={onFilterCategoryList}
+        className={activeBtnClass}
+        type="button"
+      >
         {displayText}
       </button>
     </li>
@@ -272,9 +278,42 @@ class GameContainer extends Component {
   state = {
     imagesList: initialImagesList,
     activeTab: tabsList[0].tabId,
-    count: "0",
+    count: '0',
+    secondsCount: '60',
     newRandomImage: initialImagesList[0],
     isMatched: true,
+  }
+
+  componentDidMount() {
+    this.onSecondsCount()
+  }
+
+  componentWillUnmount() {
+    this.clearTimerInterval()
+  }
+
+  clearTimerInterval = () => clearInterval(this.intervalId)
+
+  restCounter = () => {
+    this.clearInterval(this.intervalId)
+  }
+
+  decreaseSecondsCount = () => {
+    const {secondsCount} = this.state
+
+    this.setState(prevState => ({
+      secondsCount: parseInt(prevState.secondsCount) - 1,
+    }))
+
+    if (secondsCount < 2) {
+      console.log('times up')
+      this.setState({isMatched: false})
+      this.clearTimerInterval()
+    }
+  }
+
+  onSecondsCount = () => {
+    this.intervalId = setInterval(this.decreaseSecondsCount, 1000)
   }
 
   onFilterButtonCategory = tabId => {
@@ -283,13 +322,13 @@ class GameContainer extends Component {
 
   onChangingImage = id => {
     const {imagesList, newRandomImage} = this.state
-    const randomNo = Math.floor(Math.random())
+    const randomNo = Math.floor(Math.random() * 10)
     imagesList.sort(() => Math.random() - 0.5)
     const randomImage = imagesList[randomNo]
 
     if (newRandomImage.id === id) {
       this.setState(prevState => ({
-        count: parseInt (prevState.count) + 1,
+        count: parseInt(prevState.count) + 1,
         newRandomImage: randomImage,
       }))
     } else {
@@ -304,7 +343,9 @@ class GameContainer extends Component {
       imagesList: initialImagesList,
       activeTab: tabsList[0].tabId,
       newRandomImage: initialImagesList[0],
+      secondsCount: '60',
     })
+    this.onSecondsCount()
   }
 
   rendorGameContainer = () => {
@@ -326,6 +367,7 @@ class GameContainer extends Component {
                 eachTab={eachTab}
                 key={eachTab.tabId}
                 filteredNewLists={this.onFilterButtonCategory}
+                isActive={eachTab.tabId === activeTab}
               />
             ))}
           </ul>
@@ -346,10 +388,10 @@ class GameContainer extends Component {
   }
 
   render() {
-    const {isMatched, count} = this.state
+    const {isMatched, count, secondsCount} = this.state
     return (
       <div className="main-cont">
-        <Header count={count} />
+        <Header count={count} seconds={secondsCount} />
         {isMatched ? (
           this.rendorGameContainer()
         ) : (
